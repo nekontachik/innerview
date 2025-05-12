@@ -1,0 +1,52 @@
+{
+  "moves": [
+    {
+      "id": "setup",
+      "description": "Project setup and dependencies",
+      "status": "todo",
+      "rest": true
+    },
+    {
+      "id": "database",
+      "description": "Set up Supabase database and schema",
+      "status": "todo"
+    },
+    {
+      "id": "types",
+      "description": "Create TypeScript types and interfaces",
+      "status": "todo"
+    },
+    {
+      "id": "components",
+      "description": "Create React components",
+      "status": "todo",
+      "rest": true
+    },
+    {
+      "id": "api",
+      "description": "Implement API routes",
+      "status": "todo"
+    },
+    {
+      "id": "ai",
+      "description": "Set up OpenAI integration",
+      "status": "todo"
+    },
+    {
+      "id": "ui",
+      "description": "Style components with Tailwind",
+      "status": "todo"
+    },
+    {
+      "id": "testing",
+      "description": "Add tests and error handling",
+      "status": "todo",
+      "rest": true
+    },
+    {
+      "id": "deploy",
+      "description": "Deploy to Vercel",
+      "status": "todo"
+    }
+  ]
+} 
