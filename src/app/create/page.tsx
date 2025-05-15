@@ -1,3 +1,5 @@
+'use client';
+
 import QuestionForm from '@/components/QuestionForm';
 import { useState } from 'react';
 
