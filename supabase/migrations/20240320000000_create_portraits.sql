@@ -9,7 +9,9 @@ CREATE TABLE portraits (
 
 -- Create function to increment reaction
 CREATE OR REPLACE FUNCTION increment_reaction(portrait_id UUID, reaction_type TEXT)
-RETURNS void AS $$
+RETURNS JSONB AS $$
+DECLARE
+  updated_reactions JSONB;
 BEGIN
   UPDATE portraits
   SET reactions = jsonb_set(
@@ -17,6 +19,13 @@ BEGIN
     array[reaction_type],
     to_jsonb((COALESCE((reactions->>reaction_type)::int, 0) + 1)::text)
   )
-  WHERE id = portrait_id;
+  WHERE id = portrait_id
+  RETURNING reactions INTO updated_reactions;
+
+  IF updated_reactions IS NULL THEN
+    RAISE EXCEPTION 'Portrait with ID % not found', portrait_id;
+  END IF;
+
+  RETURN updated_reactions;
 END;
 $$ LANGUAGE plpgsql; 
