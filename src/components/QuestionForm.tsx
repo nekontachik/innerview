@@ -1,23 +1,50 @@
 'use client';
 
 import { useState } from 'react';
-import { QuestionFormProps } from '@/types';
 
-const QUESTIONS = [
-  'Що для вас означає щастя?',
-  'Що б ви хотіли змінити в собі?',
-  'Який момент вашого життя ви вважаєте найважливішим?'
+interface QuestionFormProps {
+  onSubmit: (answers: Record<string, string>) => Promise<void>;
+}
+
+const questions = [
+  {
+    id: 'personality',
+    text: 'Опишіть свою особистість трьома словами',
+    placeholder: 'Наприклад: творча, емоційна, цілеспрямована'
+  },
+  {
+    id: 'values',
+    text: 'Що для вас найважливіше в житті?',
+    placeholder: 'Наприклад: сім\'я, самореалізація, свобода'
+  },
+  {
+    id: 'dreams',
+    text: 'Про що ви мрієте?',
+    placeholder: 'Наприклад: подорожувати світом, створити власний бізнес'
+  },
+  {
+    id: 'fears',
+    text: 'Чого ви боїтесь?',
+    placeholder: 'Наприклад: не реалізувати свій потенціал, втратити близьких'
+  },
+  {
+    id: 'strengths',
+    text: 'У чому ваша сила?',
+    placeholder: 'Наприклад: вміння знаходити рішення, емпатія'
+  }
 ];
 
-export default function QuestionForm({ onSubmit, isLoading }: QuestionFormProps) {
-  const [answers, setAnswers] = useState<string[]>(Array(QUESTIONS.length).fill(''));
+export default function QuestionForm({ onSubmit }: QuestionFormProps) {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (answers.some(answer => !answer.trim())) {
+    // Перевіряємо, чи всі питання відповідені
+    const unansweredQuestions = questions.filter(q => !answers[q.id]);
+    if (unansweredQuestions.length > 0) {
       setError('Будь ласка, відповідайте на всі питання');
       return;
     }
@@ -25,16 +52,15 @@ export default function QuestionForm({ onSubmit, isLoading }: QuestionFormProps)
     try {
       await onSubmit(answers);
     } catch (err) {
-      setError('Сталася помилка при створенні портрету. Спробуйте ще раз.');
-      console.error('Error submitting form:', err);
+      setError(err instanceof Error ? err.message : 'Щось пішло не так');
     }
   };
 
-  const handleAnswerChange = (index: number, value: string) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = value;
-    setAnswers(newAnswers);
-    setError(null);
+  const handleAnswerChange = (questionId: string, value: string) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
   };
 
   return (
@@ -57,39 +83,27 @@ export default function QuestionForm({ onSubmit, isLoading }: QuestionFormProps)
             </div>
           )}
           
-          {QUESTIONS.map((question, index) => (
-            <div key={index} className="space-y-3">
-              <label className="block text-xl font-semibold text-gray-800">
-                {question}
+          {questions.map((question, index) => (
+            <div key={question.id} className="space-y-2">
+              <label htmlFor={question.id} className="block text-lg font-medium text-gray-900">
+                {index + 1}. {question.text}
               </label>
               <textarea
-                value={answers[index]}
-                onChange={(e) => handleAnswerChange(index, e.target.value)}
-                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
-                rows={4}
-                placeholder="Напишіть вашу відповідь тут..."
-                disabled={isLoading}
-                required
+                id={question.id}
+                value={answers[question.id] || ''}
+                onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                placeholder={question.placeholder}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                rows={3}
               />
             </div>
           ))}
 
           <button
             type="submit"
-            disabled={isLoading}
             className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Генеруємо портрет...
-              </span>
-            ) : (
-              'Створити портрет'
-            )}
+            Створити портрет
           </button>
         </form>
       </div>
