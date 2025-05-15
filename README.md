@@ -71,24 +71,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 npm run dev
 ```
 
-## Деплой
-
-1. Створіть проект на Vercel:
-```bash
-vercel
-```
-
-2. Налаштуйте змінні середовища в Vercel:
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `OPENAI_API_KEY`
-- `NEXT_PUBLIC_APP_URL`
-
-3. Деплой:
-```bash
-vercel --prod
-```
-
 ## База даних
 
 1. Створіть проект в Supabase
@@ -98,7 +80,7 @@ CREATE TABLE portraits (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   text TEXT NOT NULL,
-  imageUrl TEXT,
+  image_url TEXT,
   reactions JSONB DEFAULT '{"isMe": 0, "isBeautiful": 0, "isTouching": 0}'::jsonb NOT NULL
 );
 

@@ -43,7 +43,7 @@ export default function PortraitResult({ portrait }: PortraitResultProps) {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="relative aspect-square">
         <img
-          src={portrait.imageUrl}
+          src={portrait.image_url}
           alt="Psychological portrait"
           className="w-full h-full object-cover"
         />
