@@ -13,7 +13,7 @@
       "rest": true
     },
     {
-      "status": "todo",
+      "status": "complete",
       "description": "Verify frontend components handle API response correctly",
       "details": "Check PortraitResult and result page components for proper type usage"
     },

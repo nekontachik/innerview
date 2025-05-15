@@ -10,6 +10,24 @@ export default function ResultPage({ params }: ResultPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchPortrait = async () => {
+      try {
+        const response = await fetch(`/api/portraits/${params.id}`);
+        if (!response.ok) throw new Error('Failed to fetch portrait');
+        const data = await response.json();
+        setPortrait(data);
+      } catch (err) {
+        console.error('Error fetching portrait:', err);
+        setError('Failed to load portrait. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPortrait();
+  }, [params.id]);
+
   const handleReaction = async (type: 'isMe' | 'isBeautiful' | 'isTouching') => {
     try {
       const response = await fetch(`/api/portraits/${params.id}/react`, {
