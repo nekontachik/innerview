@@ -1,0 +1,26 @@
+{
+  "Climb": "deploy-fix",
+  "moves": [
+    {
+      "status": "complete",
+      "description": "Check and fix type definitions in src/types/index.ts",
+      "details": "Verify GeneratePortraitResponse type and ensure consistent property naming"
+    },
+    {
+      "status": "complete",
+      "description": "Fix type error in generate/route.ts",
+      "details": "Update property name from 'imageurl' to 'imageUrl' to match type definition",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Verify frontend components handle API response correctly",
+      "details": "Check PortraitResult and result page components for proper type usage"
+    },
+    {
+      "status": "todo",
+      "description": "Test build locally",
+      "details": "Run npm run build to verify all type errors are fixed"
+    }
+  ]
+} 

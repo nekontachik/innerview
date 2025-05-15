@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     const response: GeneratePortraitResponse = {
       id: portrait.id,
       text: portrait.text,
-      imageurl: portrait.imageUrl
+      imageUrl: portrait.imageUrl
     };
 
     return NextResponse.json(response);
