@@ -80,12 +80,20 @@
     @apply border-neutral-200;
   }
   body {
-    @apply bg-white text-foreground;
+    @apply bg-white text-gray-900;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
+  .text-foreground {
+    @apply text-gray-900;
+  }
+  
+  .bg-background {
+    @apply bg-white;
+  }
+
   .bg-gradient-primary {
     @apply bg-gradient-to-br from-blue-500 to-purple-600;
   }
