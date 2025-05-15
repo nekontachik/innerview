@@ -43,16 +43,6 @@ export async function getPortrait(id: string) {
   return data;
 }
 
-export async function updateReactions(id: string, reactionType: 'isMe' | 'isBeautiful' | 'isTouching') {
-  const { data, error } = await supabase.rpc('increment_reaction', {
-    portrait_id: id,
-    reaction_type: reactionType
-  });
-
-  if (error) throw error;
-  return data;
-}
-
 export async function incrementReaction(portraitId: string, reactionType: 'isMe' | 'isBeautiful' | 'isTouching') {
   const { data, error } = await supabase
     .rpc('increment_reaction', {
