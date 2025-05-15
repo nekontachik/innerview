@@ -1,0 +1,38 @@
+{
+  "Climb": "metrics",
+  "moves": [
+    {
+      "status": "todo",
+      "description": "Встановити Vercel Analytics",
+      "details": "Додати @vercel/analytics та налаштувати"
+    },
+    {
+      "status": "todo",
+      "description": "Додати метрики створення",
+      "details": "Відстеження створення портретів",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Додати метрики переглядів",
+      "details": "Відстеження переглядів портретів"
+    },
+    {
+      "status": "todo",
+      "description": "Додати метрики реакцій",
+      "details": "Відстеження реакцій на портрети",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Додати метрики API",
+      "details": "Відстеження часу відповіді та помилок"
+    },
+    {
+      "status": "todo",
+      "description": "Налаштувати дашборд",
+      "details": "Створити дашборд в Vercel Analytics",
+      "rest": true
+    }
+  ]
+} 

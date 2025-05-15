@@ -1,15 +1,15 @@
 // Database types
-export type Portrait = {
+export interface Portrait {
   id: string;
+  created_at: string;
   text: string;
-  imageUrl?: string;
-  createdAt: string;
+  image_url: string;
   reactions: {
     isMe: number;
     isBeautiful: number;
     isTouching: number;
   };
-};
+}
 
 // Question types
 export interface Question {
@@ -44,15 +44,15 @@ export const questions: Question[] = [
 ];
 
 // API types
-export type GeneratePortraitRequest = {
-  answers: string[];
-};
+export interface GeneratePortraitRequest {
+  answers: Record<string, string>;
+}
 
-export type GeneratePortraitResponse = {
+export interface GeneratePortraitResponse {
   id: string;
   text: string;
-  imageUrl?: string;
-};
+  imageUrl: string;
+}
 
 export type ReactToPortraitRequest = {
   portraitId: string;
@@ -88,4 +88,14 @@ export type ApiError = {
   message: string;
   status: number;
   details?: unknown;
-}; 
+};
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  details?: Array<{
+    path: string;
+    message: string;
+  }>;
+} 

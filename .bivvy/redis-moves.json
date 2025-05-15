@@ -1,0 +1,43 @@
+{
+  "Climb": "redis",
+  "moves": [
+    {
+      "status": "todo",
+      "description": "Створити Redis клієнт",
+      "details": "Створити утиліту для роботи з Redis"
+    },
+    {
+      "status": "todo",
+      "description": "Додати кешування списку портретів",
+      "details": "Реалізувати кешування GET /api/portraits",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Додати кешування окремого портрету",
+      "details": "Реалізувати кешування GET /api/portraits/[id]"
+    },
+    {
+      "status": "todo",
+      "description": "Додати кешування реакцій",
+      "details": "Реалізувати кешування PATCH /api/portraits/[id]",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Додати інвалідацію кешу",
+      "details": "Реалізувати автоматичну інвалідацію кешу при змінах"
+    },
+    {
+      "status": "todo",
+      "description": "Додати обробку помилок",
+      "details": "Реалізувати fallback на Supabase при помилках Redis",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Тестування",
+      "details": "Протестувати продуктивність та стабільність"
+    }
+  ]
+} 

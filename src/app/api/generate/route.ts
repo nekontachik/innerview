@@ -7,46 +7,53 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body: GeneratePortraitRequest = await request.json();
-    const { answers } = body;
+    const { answers } = await req.json();
 
-    if (!answers || !Array.isArray(answers) || answers.length === 0) {
+    if (!answers || typeof answers !== 'object') {
       return NextResponse.json(
-        { error: 'Invalid request body' },
+        { error: 'Missing or invalid answers' },
         { status: 400 }
       );
     }
 
-    // Generate portrait text
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+    // Генерація тексту портрету
+    const textResponse = await openai.chat.completions.create({
+      model: 'gpt-4',
       messages: [
         {
-          role: "system",
-          content: "Ти - експерт з психології та літератури. Твоє завдання - створити літературний портрет людини на основі її відповідей. Портрет має бути написаний від третьої особи, використовувати метафори та бути емоційним. Довжина - 2-3 абзаци."
+          role: 'system',
+          content: `Ви - психолог, який створює детальний психологічний портрет на основі відповідей людини.
+          Використовуйте емпатію та професійний підхід. Відповідь має бути українською мовою.`
         },
         {
-          role: "user",
-          content: `Створи психологічний портрет на основі цих відповідей:\n\n${answers.join('\n\n')}`
+          role: 'user',
+          content: `Створіть психологічний портрет на основі цих відповідей:
+            Особистість: ${answers.personality}
+            Цінності: ${answers.values}
+            Мрії: ${answers.dreams}
+            Страхи: ${answers.fears}
+            Сильні сторони: ${answers.strengths}`
         }
       ],
       temperature: 0.7,
-      max_tokens: 500
+      max_tokens: 1000,
     });
 
-    const portraitText = completion.choices[0].message.content;
+    const portraitText = textResponse.choices[0]?.message?.content;
     if (!portraitText) {
       throw new Error('Failed to generate portrait text');
     }
 
-    // Generate portrait image
+    // Генерація зображення
     const imageResponse = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: `Create a portrait that represents this psychological description: ${portraitText}. Style: artistic, emotional, abstract.`,
+      model: 'dall-e-3',
+      prompt: `Create a psychological portrait that represents: ${answers.personality}. The image should be abstract, artistic, and emotionally resonant. Use soft colors and flowing shapes.`,
       n: 1,
-      size: "1024x1024"
+      size: '1024x1024',
+      quality: 'standard',
+      style: 'natural',
     });
 
     const imageUrl = imageResponse.data?.[0]?.url;
@@ -54,20 +61,18 @@ export async function POST(request: Request) {
       throw new Error('Failed to generate portrait image');
     }
 
-    // Save to database
+    // Збереження портрету
     const portrait = await createPortrait(portraitText, imageUrl);
 
-    const response: GeneratePortraitResponse = {
+    return NextResponse.json({
       id: portrait.id,
       text: portrait.text,
-      imageUrl: portrait.imageUrl
-    };
-
-    return NextResponse.json(response);
+      imageUrl: portrait.image_url
+    });
   } catch (error) {
     console.error('Error generating portrait:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Failed to generate portrait' },
       { status: 500 }
     );
   }

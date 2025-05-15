@@ -1,0 +1,32 @@
+{
+  "Climb": "env1",
+  "moves": [
+    {
+      "status": "todo",
+      "description": "Перевірити використання змінних в test-db",
+      "details": "Знайти всі місця використання змінних середовища в test-db route"
+    },
+    {
+      "status": "todo",
+      "description": "Перевірити використання змінних в supabase.ts",
+      "details": "Знайти всі місця використання змінних середовища в supabase.ts",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Оновити render.yaml",
+      "details": "Додати NEXT_PUBLIC_ змінні в render.yaml"
+    },
+    {
+      "status": "todo",
+      "description": "Оновити документацію",
+      "details": "Оновити README.md з правильними змінними середовища",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Тестування",
+      "details": "Протестувати локально та в продакшені"
+    }
+  ]
+} 

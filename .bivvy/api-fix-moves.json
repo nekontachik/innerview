@@ -1,0 +1,67 @@
+{
+  "Climb": "api1",
+  "moves": [
+    {
+      "status": "complete",
+      "description": "Create test API endpoint",
+      "details": "Create a simple hello world API endpoint to verify routing works"
+    },
+    {
+      "status": "complete",
+      "description": "Verify API route structure",
+      "details": "Check if API routes are in correct location and format"
+    },
+    {
+      "status": "complete",
+      "description": "Update Next.js config",
+      "details": "Add necessary configuration for API routes"
+    },
+    {
+      "status": "complete",
+      "description": "Test basic API endpoint",
+      "details": "Verify the test endpoint works before adding Supabase"
+    },
+    {
+      "status": "complete",
+      "description": "Add Supabase connection",
+      "details": "Add Supabase client and test connection",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Test DB endpoint",
+      "details": "Verify the test-db endpoint works with Supabase"
+    },
+    {
+      "status": "complete",
+      "description": "Create database table",
+      "details": "Create portraits table in Supabase with proper schema"
+    },
+    {
+      "status": "complete",
+      "description": "Test all API endpoints",
+      "details": "Test create, read, update, delete operations for portraits",
+      "rest": true
+    },
+    {
+      "status": "complete",
+      "description": "Add error handling",
+      "details": "Add proper error handling and validation for all endpoints"
+    },
+    {
+      "status": "complete",
+      "description": "Add API documentation",
+      "details": "Document all API endpoints with examples"
+    },
+    {
+      "status": "complete",
+      "description": "Prepare for deployment",
+      "details": "Update environment variables and configuration for production"
+    },
+    {
+      "status": "climbing",
+      "description": "Deploy to production",
+      "details": "Deploy the application and verify all functionality"
+    }
+  ]
+} 

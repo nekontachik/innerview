@@ -1,58 +1,87 @@
 import { createClient } from '@supabase/supabase-js';
 import { Portrait } from '@/types';
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error('Missing Supabase environment variables');
+// Перевіряємо змінні середовища
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+console.log('Environment check:', {
+  hasPublicUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+  hasPublicKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  finalUrl: supabaseUrl,
+  finalKey: supabaseKey ? 'exists' : 'missing'
+});
+
+if (!supabaseUrl) {
+  throw new Error('Missing Supabase URL. Please set NEXT_PUBLIC_SUPABASE_URL');
 }
 
-export const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+if (!supabaseKey) {
+  throw new Error('Missing Supabase key. Please set NEXT_PUBLIC_SUPABASE_ANON_KEY');
+}
+
+// Створюємо клієнт Supabase
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false
+  }
+});
 
 // Helper functions
-export async function createPortrait(text: string, imageUrl?: string) {
-  if (!text || typeof text !== 'string') {
-    throw new Error('Text is required and must be a string');
+export async function createPortrait(text: string, imageUrl: string): Promise<Portrait> {
+  console.log('Creating portrait with:', { text, imageUrl });
+  try {
+    console.log('Supabase client config:', {
+      url: supabaseUrl,
+      hasKey: !!supabaseKey,
+      keyLength: supabaseKey?.length
+    });
+
+    const { data, error } = await supabase
+      .from('portraits')
+      .insert([
+        {
+          text,
+          imageUrl,
+          reactions: {
+            isMe: 0,
+            isBeautiful: 0,
+            isTouching: 0,
+          },
+        },
+      ])
+      .select()
+      .single();
+
+    console.log('Supabase response:', { 
+      data, 
+      error,
+      errorDetails: error ? {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      } : null
+    });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      throw new Error(`Failed to create portrait: ${error.message || 'Unknown error'}`);
+    }
+
+    if (!data) {
+      console.error('No data returned from Supabase');
+      throw new Error('No data returned from Supabase');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error in createPortrait:', error);
+    throw error;
   }
-
-  if (imageUrl && typeof imageUrl !== 'string') {
-    throw new Error('ImageUrl must be a string');
-  }
-
-  const { data, error } = await supabase
-    .from('portraits')
-    .insert([
-      {
-        text,
-        imageUrl,
-        reactions: {
-          isMe: 0,
-          isBeautiful: 0,
-          isTouching: 0
-        }
-      }
-    ])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error creating portrait:', error);
-    throw new Error(`Failed to create portrait: ${error.message}`);
-  }
-
-  if (!data) {
-    throw new Error('No data returned after creating portrait');
-  }
-
-  return data;
 }
 
-export async function getPortrait(id: string) {
-  if (!id || typeof id !== 'string') {
-    throw new Error('Valid ID is required');
-  }
-
+export async function getPortrait(id: string): Promise<Portrait> {
   const { data, error } = await supabase
     .from('portraits')
     .select('*')
@@ -61,39 +90,47 @@ export async function getPortrait(id: string) {
 
   if (error) {
     console.error('Error fetching portrait:', error);
-    throw new Error(`Failed to fetch portrait: ${error.message}`);
-  }
-
-  if (!data) {
-    throw new Error(`Portrait with ID ${id} not found`);
+    throw new Error('Failed to fetch portrait');
   }
 
   return data;
 }
 
-export async function incrementReaction(portraitId: string, reactionType: 'isMe' | 'isBeautiful' | 'isTouching') {
-  if (!portraitId || typeof portraitId !== 'string') {
-    throw new Error('Valid portraitId is required');
+export async function incrementReaction(
+  id: string,
+  type: 'isMe' | 'isBeautiful' | 'isTouching'
+): Promise<Portrait['reactions']> {
+  const { data: portrait, error: fetchError } = await supabase
+    .from('portraits')
+    .select('reactions')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    console.error('Error fetching portrait:', fetchError);
+    throw new Error('Failed to fetch portrait');
   }
 
-  if (!reactionType || !['isMe', 'isBeautiful', 'isTouching'].includes(reactionType)) {
-    throw new Error('Valid reactionType is required (isMe, isBeautiful, or isTouching)');
+  const currentReactions = portrait.reactions || {
+    isMe: 0,
+    isBeautiful: 0,
+    isTouching: 0,
+  };
+
+  const updatedReactions = {
+    ...currentReactions,
+    [type]: (currentReactions[type] || 0) + 1,
+  };
+
+  const { error: updateError } = await supabase
+    .from('portraits')
+    .update({ reactions: updatedReactions })
+    .eq('id', id);
+
+  if (updateError) {
+    console.error('Error updating reactions:', updateError);
+    throw new Error('Failed to update reactions');
   }
 
-  const { data, error } = await supabase
-    .rpc('increment_reaction', {
-      portrait_id: portraitId,
-      reaction_type: reactionType
-    });
-
-  if (error) {
-    console.error('Error incrementing reaction:', error);
-    throw new Error(`Failed to increment reaction: ${error.message}`);
-  }
-
-  if (!data) {
-    throw new Error(`Failed to increment reaction for portrait ${portraitId}`);
-  }
-
-  return data;
+  return updatedReactions;
 } 

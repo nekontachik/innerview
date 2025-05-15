@@ -1,0 +1,25 @@
+{
+  "Climb": "next1",
+  "moves": [
+    {
+      "status": "todo",
+      "description": "Clear Next.js cache and rebuild",
+      "details": "Delete .next folder and node_modules/.cache, then rebuild"
+    },
+    {
+      "status": "todo",
+      "description": "Verify Next.js configuration",
+      "details": "Check next.config.js and package.json for correct settings"
+    },
+    {
+      "status": "todo",
+      "description": "Check build process",
+      "details": "Run production build and check for errors"
+    },
+    {
+      "status": "todo",
+      "description": "Test form persistence",
+      "details": "Verify form data is preserved after errors"
+    }
+  ]
+} 

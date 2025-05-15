@@ -17,8 +17,9 @@ AI-powered psychological portrait generator.
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    OPENAI_API_KEY=your_openai_api_key
-   UPSTASH_REDIS_REST_URL=your_redis_url
-   UPSTASH_REDIS_REST_TOKEN=your_redis_token
+   UPSTASH_REDIS_URL=your_redis_url
+   UPSTASH_REDIS_TOKEN=your_redis_token
+   NEXT_PUBLIC_APP_URL=https://innerview.onrender.com
    ```
 5. Deploy!
 
@@ -59,8 +60,8 @@ npm install
 
 3. Створіть файл `.env.local` з наступними змінними:
 ```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 OPENAI_API_KEY=your_openai_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```

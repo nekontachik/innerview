@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 interface QuestionFormProps {
   onSubmit: (answers: Record<string, string>) => Promise<void>;
+  isSubmitting?: boolean;
 }
 
 const questions = [
@@ -34,7 +35,7 @@ const questions = [
   }
 ];
 
-export default function QuestionForm({ onSubmit }: QuestionFormProps) {
+export default function QuestionForm({ onSubmit, isSubmitting = false }: QuestionFormProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -95,15 +96,19 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 placeholder={question.placeholder}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 rows={3}
+                disabled={isSubmitting}
               />
             </div>
           ))}
 
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+            className={`w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isSubmitting}
           >
-            Створити портрет
+            {isSubmitting ? 'Створення портрету...' : 'Створити портрет'}
           </button>
         </form>
       </div>

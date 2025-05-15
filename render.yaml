@@ -5,13 +5,15 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
-      - key: SUPABASE_URL
+      - key: NEXT_PUBLIC_SUPABASE_URL
         sync: false
-      - key: SUPABASE_ANON_KEY
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         sync: false
       - key: OPENAI_API_KEY
         sync: false
       - key: UPSTASH_REDIS_URL
         sync: false
       - key: UPSTASH_REDIS_TOKEN
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
         sync: false 
