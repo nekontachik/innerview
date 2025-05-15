@@ -7,11 +7,7 @@ export const db = new Database({
       text: 'text',
       imageUrl: 'text?',
       createdAt: 'timestamp',
-      reactions: {
-        isMe: 'integer',
-        isBeautiful: 'integer',
-        isTouching: 'integer'
-      }
+      reactions: 'jsonb'
     }
   },
   indexes: [

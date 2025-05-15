@@ -2,14 +2,46 @@
 export type Portrait = {
   id: string;
   text: string;
-  imageurl?: string;
-  createdat: string;
+  imageUrl?: string;
+  createdAt: string;
   reactions: {
     isMe: number;
     isBeautiful: number;
     isTouching: number;
   };
 };
+
+// Question types
+export interface Question {
+  id: string;
+  text: string;
+  type: 'text' | 'select';
+  options?: string[];
+}
+
+// Constants
+export const MAX_ANSWER_LENGTH = 500;
+export const MIN_ANSWER_LENGTH = 10;
+export const REQUIRED_QUESTIONS = 3;
+
+// Questions data
+export const questions: Question[] = [
+  {
+    id: '1',
+    text: 'Що ти хочеш, щоб інші про тебе знали, але не видно ззовні?',
+    type: 'text'
+  },
+  {
+    id: '2',
+    text: 'Якби ти був природним явищем — чим саме?',
+    type: 'text'
+  },
+  {
+    id: '3',
+    text: 'Який стан або емоція останнім часом в тобі живе?',
+    type: 'text'
+  }
+];
 
 // API types
 export type GeneratePortraitRequest = {
@@ -19,7 +51,7 @@ export type GeneratePortraitRequest = {
 export type GeneratePortraitResponse = {
   id: string;
   text: string;
-  imageurl?: string;
+  imageUrl?: string;
 };
 
 export type ReactToPortraitRequest = {

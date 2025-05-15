@@ -1,14 +1,23 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { createPortrait } from '@/lib/supabase';
+import { GeneratePortraitRequest, GeneratePortraitResponse } from '@/types';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { answers } = await req.json();
+    const body: GeneratePortraitRequest = await request.json();
+    const { answers } = body;
+
+    if (!answers || !Array.isArray(answers) || answers.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
 
     // Generate portrait text
     const completion = await openai.chat.completions.create({
@@ -48,11 +57,17 @@ export async function POST(req: Request) {
     // Save to database
     const portrait = await createPortrait(portraitText, imageUrl);
 
-    return NextResponse.json(portrait);
+    const response: GeneratePortraitResponse = {
+      id: portrait.id,
+      text: portrait.text,
+      imageurl: portrait.imageUrl
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error generating portrait:', error);
     return NextResponse.json(
-      { error: 'Failed to generate portrait' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
