@@ -19,7 +19,6 @@ AI-powered psychological portrait generator.
    OPENAI_API_KEY=your_openai_api_key
    UPSTASH_REDIS_REST_URL=your_redis_url
    UPSTASH_REDIS_REST_TOKEN=your_redis_token
-   METRICS_TOKEN=your_metrics_token
    ```
 5. Deploy!
 
