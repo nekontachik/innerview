@@ -1,0 +1,31 @@
+{
+  "Climb": "form-fix",
+  "moves": [
+    {
+      "status": "todo",
+      "description": "Standardize field naming in Supabase and TypeScript types",
+      "details": "Update all references to use imageUrl consistently"
+    },
+    {
+      "status": "todo",
+      "description": "Remove duplicate reaction functions",
+      "details": "Keep only incrementReaction and update all references",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Add proper error handling and validation",
+      "details": "Add specific error messages and input validation"
+    },
+    {
+      "status": "todo",
+      "description": "Add loading indicators and feedback",
+      "details": "Add loading states for all async operations"
+    },
+    {
+      "status": "todo",
+      "description": "Test form submission end-to-end",
+      "details": "Verify all steps work correctly"
+    }
+  ]
+} 

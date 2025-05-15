@@ -95,14 +95,14 @@ vercel --prod
 2. Виконайте SQL міграцію:
 ```sql
 CREATE TABLE portraits (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   text TEXT NOT NULL,
-  imageurl TEXT,
-  createdat TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  reactions JSONB DEFAULT '{"isMe": 0, "isBeautiful": 0, "isTouching": 0}'::jsonb
+  imageUrl TEXT,
+  reactions JSONB DEFAULT '{"isMe": 0, "isBeautiful": 0, "isTouching": 0}'::jsonb NOT NULL
 );
 
-CREATE INDEX idx_portraits_createdat ON portraits(createdat);
+CREATE INDEX idx_portraits_createdat ON portraits(created_at);
 
 CREATE OR REPLACE FUNCTION increment_reaction(portrait_id UUID, reaction_type TEXT)
 RETURNS JSONB AS $$

@@ -2,17 +2,32 @@
 
 import QuestionForm from '@/components/QuestionForm';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CreatePage() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (answers: string[]) => {
     setIsLoading(true);
     try {
-      // TODO: Implement API call to generate portrait
-      console.log('Answers:', answers);
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ answers }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate portrait');
+      }
+
+      const data = await response.json();
+      router.push(`/result/${data.id}`);
     } catch (error) {
       console.error('Error generating portrait:', error);
+      throw error; // Let QuestionForm handle the error display
     } finally {
       setIsLoading(false);
     }

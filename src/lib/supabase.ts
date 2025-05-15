@@ -11,13 +11,13 @@ export const supabase = createClient(
 );
 
 // Helper functions
-export async function createPortrait(text: string, imageurl?: string) {
+export async function createPortrait(text: string, imageUrl?: string) {
   const { data, error } = await supabase
     .from('portraits')
     .insert([
       {
         text,
-        imageurl,
+        imageUrl,
         reactions: {
           isMe: 0,
           isBeautiful: 0,
