@@ -80,8 +80,18 @@
     @apply border-neutral-200;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .bg-gradient-primary {
+    @apply bg-gradient-to-br from-blue-500 to-purple-600;
+  }
+
+  .bg-gradient-secondary {
+    @apply bg-gradient-to-br from-pink-500 to-orange-400;
   }
 }
 
@@ -106,15 +116,6 @@
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
-}
-
-/* Custom gradients */
-.bg-gradient-primary {
-  @apply bg-gradient-to-br from-blue-500 to-purple-600;
-}
-
-.bg-gradient-secondary {
-  @apply bg-gradient-to-br from-pink-500 to-orange-400;
 }
 
 /* Custom shadows */
