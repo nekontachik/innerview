@@ -1,0 +1,37 @@
+{
+  "Climb": "deps1",
+  "moves": [
+    {
+      "status": "complete",
+      "description": "Backup package files",
+      "details": "Create backup of package.json and package-lock.json"
+    },
+    {
+      "status": "complete",
+      "description": "Update Next.js and related packages",
+      "details": "Update next and eslint-config-next to 14.2.28"
+    },
+    {
+      "status": "complete",
+      "description": "Update testing libraries",
+      "details": "Update @testing-library/react and @testing-library/jest-dom to latest versions"
+    },
+    {
+      "status": "complete",
+      "description": "Run tests",
+      "details": "Run all tests to check compatibility",
+      "rest": true
+    },
+    {
+      "status": "todo",
+      "description": "Build and check types",
+      "details": "Run build and check for type errors"
+    },
+    {
+      "status": "todo",
+      "description": "Manual testing",
+      "details": "Test all functionality manually",
+      "rest": true
+    }
+  ]
+} 

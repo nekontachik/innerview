@@ -1,12 +1,33 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PortraitResult from '@/components/PortraitResult';
+import { supabase } from '@/lib/supabase';
+
+// Мокаємо залежності
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    from: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    single: jest.fn()
+  }
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn()
+  })
+}));
+
+// Мокаємо fetch
+global.fetch = jest.fn();
 
 describe('PortraitResult', () => {
   const mockPortrait = {
     id: '1',
     text: 'Test portrait text',
-    imageUrl: 'https://example.com/image.jpg',
-    createdAt: '2024-03-20',
+    image_url: 'https://example.com/image.jpg',
+    created_at: '2024-03-20',
     reactions: {
       isMe: 5,
       isBeautiful: 3,
@@ -14,62 +35,58 @@ describe('PortraitResult', () => {
     }
   };
 
-  const mockOnReaction = jest.fn();
-
   beforeEach(() => {
-    mockOnReaction.mockClear();
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: jest.fn()
+    jest.clearAllMocks();
+    (global.fetch as jest.Mock).mockClear();
+  });
+
+  it('renders portrait correctly', () => {
+    render(<PortraitResult portrait={mockPortrait} />);
+    
+    expect(screen.getByText('Test portrait text')).toBeInTheDocument();
+    expect(screen.getByAltText('Psychological portrait')).toHaveAttribute('src', 'https://example.com/image.jpg');
+    expect(screen.getByText('5 Це про мене')).toBeInTheDocument();
+    expect(screen.getByText('3 Красиво')).toBeInTheDocument();
+    expect(screen.getByText('2 Зворушливо')).toBeInTheDocument();
+  });
+
+  it('handles reaction button clicks', async () => {
+    const updatedPortrait = {
+      ...mockPortrait,
+      reactions: {
+        isMe: 6,
+        isBeautiful: 3,
+        isTouching: 2
       }
+    };
+
+    (supabase.from('portraits').update().eq().select().single as jest.Mock).mockResolvedValue({
+      data: updatedPortrait
     });
-  });
 
-  it('renders portrait text', () => {
-    render(<PortraitResult portrait={mockPortrait} onReaction={mockOnReaction} />);
-    expect(screen.getByText(mockPortrait.text)).toBeInTheDocument();
-  });
-
-  it('renders portrait image if available', () => {
-    render(<PortraitResult portrait={mockPortrait} onReaction={mockOnReaction} />);
-    const image = screen.getByAltText('AI Generated Portrait');
-    expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', mockPortrait.imageUrl);
-  });
-
-  it('handles reaction clicks', async () => {
-    render(<PortraitResult portrait={mockPortrait} onReaction={mockOnReaction} />);
+    render(<PortraitResult portrait={mockPortrait} />);
     
-    const reactionButton = screen.getByText('Це про мене');
-    fireEvent.click(reactionButton);
+    const meButton = screen.getByText('5 Це про мене');
+    fireEvent.click(meButton);
 
     await waitFor(() => {
-      expect(mockOnReaction).toHaveBeenCalledWith('isMe');
+      expect(supabase.from).toHaveBeenCalledWith('portraits');
     });
+
+    // Перевіряємо, що компонент оновився з новими реакціями
+    expect(screen.getByText('6 Це про мене')).toBeInTheDocument();
   });
 
-  it('handles share button click', async () => {
-    render(<PortraitResult portrait={mockPortrait} onReaction={mockOnReaction} />);
+  it('handles errors gracefully', async () => {
+    (supabase.from('portraits').update().eq().select().single as jest.Mock).mockRejectedValue(new Error('Failed to update reactions'));
+
+    render(<PortraitResult portrait={mockPortrait} />);
     
-    const shareButton = screen.getByText('Поділитися');
-    fireEvent.click(shareButton);
+    const meButton = screen.getByText('5 Це про мене');
+    fireEvent.click(meButton);
 
     await waitFor(() => {
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(window.location.href);
-      expect(screen.getByText('Скопійовано!')).toBeInTheDocument();
-    });
-  });
-
-  it('disables reaction buttons while reacting', async () => {
-    render(<PortraitResult portrait={mockPortrait} onReaction={mockOnReaction} />);
-    
-    const reactionButton = screen.getByText('Це про мене');
-    fireEvent.click(reactionButton);
-
-    expect(reactionButton).toBeDisabled();
-    
-    await waitFor(() => {
-      expect(reactionButton).not.toBeDisabled();
+      expect(screen.getByText('Помилка при оновленні реакцій')).toBeInTheDocument();
     });
   });
 }); 

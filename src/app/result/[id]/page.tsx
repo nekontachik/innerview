@@ -34,7 +34,11 @@ export default function ResultPage() {
           throw new Error(data.error || 'Failed to fetch portrait');
         }
 
-        const data = await response.json();
+        const res = await response.json();
+        const data = res.data;
+        if (!data || !data.id || !data.createdAt || !data.imageUrl || !data.reactions) {
+          throw new Error('Invalid portrait data');
+        }
         setPortrait(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -71,8 +75,14 @@ export default function ResultPage() {
     );
   }
 
-  if (!portrait || !portrait.id || !portrait.created_at || !portrait.image_url || !portrait.reactions) {
-    return <div>Loading...</div>;
+  if (!portrait) {
+    return (
+      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Портрет не знайдено</p>
+        </div>
+      </div>
+    );
   }
 
   return (

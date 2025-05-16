@@ -21,7 +21,7 @@ if (!supabaseKey) {
 }
 
 // Створюємо клієнт Supabase
-const supabase = createClient(supabaseUrl, supabaseKey, {
+export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: false
   }
@@ -42,7 +42,7 @@ export async function createPortrait(text: string, imageUrl: string): Promise<Po
       .insert([
         {
           text,
-          imageUrl,
+          image_url: imageUrl,
           reactions: {
             isMe: 0,
             isBeautiful: 0,

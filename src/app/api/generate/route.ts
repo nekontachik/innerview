@@ -9,16 +9,28 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
+    console.log('Starting portrait generation...');
     const { answers } = await req.json();
+    console.log('Received answers:', answers);
 
     if (!answers || typeof answers !== 'object') {
+      console.error('Invalid answers format:', answers);
       return NextResponse.json(
         { error: 'Missing or invalid answers' },
         { status: 400 }
       );
     }
 
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('OpenAI API key is missing');
+      return NextResponse.json(
+        { error: 'OpenAI API key is not configured' },
+        { status: 500 }
+      );
+    }
+
     // Генерація тексту портрету
+    console.log('Generating portrait text...');
     const textResponse = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
@@ -42,11 +54,15 @@ export async function POST(req: Request) {
     });
 
     const portraitText = textResponse.choices[0]?.message?.content;
+    console.log('Generated portrait text:', portraitText?.substring(0, 100) + '...');
+
     if (!portraitText) {
+      console.error('Failed to generate portrait text');
       throw new Error('Failed to generate portrait text');
     }
 
     // Генерація зображення
+    console.log('Generating portrait image...');
     const imageResponse = await openai.images.generate({
       model: 'dall-e-3',
       prompt: `Create a psychological portrait that represents: ${answers.personality}. The image should be abstract, artistic, and emotionally resonant. Use soft colors and flowing shapes.`,
@@ -57,12 +73,17 @@ export async function POST(req: Request) {
     });
 
     const imageUrl = imageResponse.data?.[0]?.url;
+    console.log('Generated image URL:', imageUrl);
+
     if (!imageUrl) {
+      console.error('Failed to generate portrait image');
       throw new Error('Failed to generate portrait image');
     }
 
     // Збереження портрету
+    console.log('Saving portrait to database...');
     const portrait = await createPortrait(portraitText, imageUrl);
+    console.log('Portrait saved successfully:', portrait.id);
 
     return NextResponse.json({
       id: portrait.id,

@@ -1,9 +1,9 @@
 // Database types
 export interface Portrait {
   id: string;
-  created_at: string;
+  createdAt: string;
   text: string;
-  image_url: string;
+  imageUrl: string;
   reactions: {
     isMe: number;
     isBeautiful: number;

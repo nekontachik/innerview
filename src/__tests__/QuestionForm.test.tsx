@@ -4,9 +4,11 @@ import QuestionForm from '@/components/QuestionForm';
 describe('QuestionForm', () => {
   const mockOnSubmit = jest.fn();
   const questions = [
-    'Що для вас означає щастя?',
-    'Що б ви хотіли змінити в собі?',
-    'Який момент вашого життя ви вважаєте найважливішим?'
+    'Опишіть свою особистість трьома словами',
+    'Що для вас найважливіше в житті?',
+    'Про що ви мрієте?',
+    'Чого ви боїтесь?',
+    'У чому ваша сила?'
   ];
 
   beforeEach(() => {
@@ -17,7 +19,7 @@ describe('QuestionForm', () => {
     render(<QuestionForm onSubmit={mockOnSubmit} />);
     
     questions.forEach(question => {
-      expect(screen.getByText(question)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(question))).toBeInTheDocument();
     });
   });
 
@@ -34,11 +36,18 @@ describe('QuestionForm', () => {
   it('calls onSubmit with answers when form is valid', async () => {
     render(<QuestionForm onSubmit={mockOnSubmit} />);
     
-    const answers = ['Щастя - це...', 'Я хотів би...', 'Найважливіший момент...'];
+    const answers = {
+      personality: 'Творча, емоційна, цілеспрямована',
+      values: 'Сім\'я, самореалізація',
+      dreams: 'Подорожувати світом',
+      fears: 'Не реалізувати потенціал',
+      strengths: 'Емпатія, креативність'
+    };
     
     const textareas = screen.getAllByRole('textbox');
-    textareas.forEach((textarea, index) => {
-      fireEvent.change(textarea, { target: { value: answers[index] } });
+    textareas.forEach((textarea) => {
+      const id = textarea.id;
+      fireEvent.change(textarea, { target: { value: answers[id as keyof typeof answers] } });
     });
 
     const submitButton = screen.getByText('Створити портрет');
@@ -50,9 +59,9 @@ describe('QuestionForm', () => {
   });
 
   it('shows loading state', () => {
-    render(<QuestionForm onSubmit={mockOnSubmit} isLoading={true} />);
+    render(<QuestionForm onSubmit={mockOnSubmit} isSubmitting={true} />);
     
-    expect(screen.getByText('Генеруємо портрет...')).toBeInTheDocument();
+    expect(screen.getByText('Створення портрету...')).toBeInTheDocument();
     expect(screen.getByRole('button')).toBeDisabled();
   });
 }); 

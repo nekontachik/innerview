@@ -11,6 +11,7 @@ export default function CreatePage() {
 
   const handleSubmit = async (answers: Record<string, string>) => {
     try {
+      console.log('Starting form submission with answers:', answers);
       setIsGenerating(true);
       setError(null);
 
@@ -22,14 +23,17 @@ export default function CreatePage() {
         body: JSON.stringify({ answers }),
       });
 
+      console.log('API Response status:', response.status);
+      const data = await response.json();
+      console.log('API Response data:', data);
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'Failed to generate portrait');
       }
 
-      const data = await response.json();
       router.push(`/result/${data.id}`);
     } catch (err) {
+      console.error('Error in handleSubmit:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsGenerating(false);

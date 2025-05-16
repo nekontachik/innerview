@@ -10,6 +10,7 @@ interface PortraitResultProps {
 export default function PortraitResult({ portrait }: PortraitResultProps) {
   const [isReacting, setIsReacting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const reactions = portrait.reactions || { isMe: 0, isBeautiful: 0, isTouching: 0 };
 
   const handleReaction = async (type: 'isMe' | 'isBeautiful' | 'isTouching') => {
     try {
@@ -41,11 +42,11 @@ export default function PortraitResult({ portrait }: PortraitResultProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="relative aspect-square">
+      <div className="relative w-full max-w-md mx-auto">
         <img
-          src={portrait.image_url}
+          src={portrait.imageUrl}
           alt="Psychological portrait"
-          className="w-full h-full object-cover"
+          className="w-full h-auto object-cover"
         />
       </div>
 
@@ -68,7 +69,7 @@ export default function PortraitResult({ portrait }: PortraitResultProps) {
               isReacting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {portrait.reactions?.isMe || 0} Це про мене
+            {reactions.isMe} Це про мене
           </button>
 
           <button
@@ -78,7 +79,7 @@ export default function PortraitResult({ portrait }: PortraitResultProps) {
               isReacting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {portrait.reactions?.isBeautiful || 0} Красиво
+            {reactions.isBeautiful} Красиво
           </button>
 
           <button
@@ -88,7 +89,7 @@ export default function PortraitResult({ portrait }: PortraitResultProps) {
               isReacting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {portrait.reactions?.isTouching || 0} Зворушливо
+            {reactions.isTouching} Зворушливо
           </button>
         </div>
       </div>

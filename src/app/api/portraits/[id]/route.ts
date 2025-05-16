@@ -44,7 +44,16 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ success: true, data });
+    // Мапінг у camelCase
+    const camelPortrait = {
+      id: data.id,
+      text: data.text,
+      imageUrl: data.image_url,
+      createdAt: data.created_at,
+      reactions: data.reactions,
+    };
+
+    return NextResponse.json({ success: true, data: camelPortrait });
   } catch (error) {
     console.error('Error in GET /api/portraits/[id]:', error);
     return NextResponse.json(
@@ -122,7 +131,16 @@ export async function PATCH(
       );
     }
 
-    return NextResponse.json({ success: true, data: updatedPortrait });
+    // Мапінг у camelCase
+    const camelPortrait = {
+      id: updatedPortrait.id,
+      text: updatedPortrait.text,
+      imageUrl: updatedPortrait.image_url,
+      createdAt: updatedPortrait.created_at,
+      reactions: updatedPortrait.reactions,
+    };
+
+    return NextResponse.json({ success: true, data: camelPortrait });
   } catch (error) {
     console.error('Error in PATCH /api/portraits/[id]:', error);
     return NextResponse.json(
