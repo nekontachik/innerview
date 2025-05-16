@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       id: portrait.id,
       text: portrait.text,
-      imageUrl: portrait.image_url
+      imageUrl: portrait.imageUrl
     });
   } catch (error) {
     console.error('Error generating portrait:', error);
