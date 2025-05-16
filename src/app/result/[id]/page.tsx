@@ -3,17 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import PortraitResult from '@/components/PortraitResult';
+import { Portrait } from '@/types';
 
-interface Portrait {
-  id: string;
-  text: string;
-  image_url: string;
-  created_at: string;
-  reactions: {
-    isMe: number;
-    isBeautiful: number;
-    isTouching: number;
-  };
+function isPortrait(obj: any): obj is Portrait {
+  return (
+    obj &&
+    typeof obj.id === 'string' &&
+    typeof obj.createdAt === 'string' &&
+    typeof obj.imageUrl === 'string' &&
+    typeof obj.text === 'string' &&
+    typeof obj.reactions === 'object'
+  );
 }
 
 export default function ResultPage() {
@@ -75,7 +75,7 @@ export default function ResultPage() {
     );
   }
 
-  if (!portrait) {
+  if (!isPortrait(portrait)) {
     return (
       <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
         <div className="text-center">
